@@ -52,5 +52,5 @@
 ### Шаги:
 1. Склонируйте репозиторий:
    ```bash
-   git clone https://github.com/username/project.git
+   git clone https://github.com/zxcuursed/practice-go/tree/master
    cd project
