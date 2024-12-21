@@ -40,3 +40,17 @@
     "host": "localhost",
     "details": "Received delete replica request"
 }
+{
+    "id": 1,
+    "timestamp": "2024-12-21T23:37:59+03:00",
+    "action": "CreateReplicaRequest",
+    "host": "localhost",
+    "details": "Received create replica request"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-21T23:37:59+03:00",
+    "action": "CreateReplica",
+    "host": "localhost",
+    "details": "Replicas created: 5"
+}

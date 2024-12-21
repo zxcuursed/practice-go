@@ -15,7 +15,6 @@ import (
 // const logFile = "agent_logs.json"
 
 // LogEntry represents a log structure
-
 type LogEntry struct {
 	ID        int    `json:"id"`
 	Timestamp string `json:"timestamp"`
@@ -86,7 +85,6 @@ func WriteLog(action, host, details string) {
 }
 
 func logStartupAndShutdown() {
-	// Логируем запуск агента
 	WriteLog("AgentStart", "localhost", "Agent started")
 
 	// Создаём канал для перехвата сигналов завершения
@@ -167,8 +165,6 @@ func getReplicaByIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteReplicaHandler(w http.ResponseWriter, r *http.Request) {
-	// replicaIDStr := r.URL.Path[len("/deleteReplica")]
-
 	WriteLog("DeleteReplicaRequest", "localhost", "Received delete replica request")
 	log.Println("Deleting replicas...")
 	w.WriteHeader(http.StatusOK)
