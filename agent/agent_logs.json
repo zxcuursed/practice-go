@@ -1,0 +1,42 @@
+{
+    "id": 1,
+    "timestamp": "2024-12-21T22:10:15+03:00",
+    "action": "CreateReplicaRequest",
+    "host": "localhost",
+    "details": "Received create replica request"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-21T22:10:15+03:00",
+    "action": "CreateReplicaError",
+    "host": "localhost",
+    "details": "Invalid request payload"
+}
+{
+    "id": 3,
+    "timestamp": "2024-12-21T22:10:38+03:00",
+    "action": "CreateReplicaRequest",
+    "host": "localhost",
+    "details": "Received create replica request"
+}
+{
+    "id": 4,
+    "timestamp": "2024-12-21T22:10:38+03:00",
+    "action": "CreateReplica",
+    "host": "localhost",
+    "details": "Replicas created: 5"
+}
+{
+    "id": 1,
+    "timestamp": "2024-12-21T22:15:55+03:00",
+    "action": "DeleteReplicaRequest",
+    "host": "localhost",
+    "details": "Received delete replica request"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-21T22:16:54+03:00",
+    "action": "DeleteReplicaRequest",
+    "host": "localhost",
+    "details": "Received delete replica request"
+}

@@ -1,0 +1,84 @@
+{
+    "id": 1,
+    "timestamp": "2024-12-18T21:19:13+03:00",
+    "action": "ControllerStart",
+    "host": "localhost",
+    "details": "Controller started"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-18T21:19:28+03:00",
+    "action": "RegisterService",
+    "host": "localhost",
+    "details": "Service registered"
+}
+{
+    "id": 3,
+    "timestamp": "2024-12-18T22:41:58+03:00",
+    "action": "ControllerStop",
+    "host": "localhost",
+    "details": "Controller stopped"
+}
+{
+    "id": 1,
+    "timestamp": "2024-12-21T21:17:28+03:00",
+    "action": "ControllerStart",
+    "host": "localhost",
+    "details": "Controller started"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-21T21:18:46+03:00",
+    "action": "ControllerStop",
+    "host": "localhost",
+    "details": "Controller stopped"
+}
+{
+    "id": 1,
+    "timestamp": "2024-12-21T21:18:49+03:00",
+    "action": "ControllerStart",
+    "host": "localhost",
+    "details": "Controller started"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-21T21:19:09+03:00",
+    "action": "ControllerStop",
+    "host": "localhost",
+    "details": "Controller stopped"
+}
+{
+    "id": 1,
+    "timestamp": "2024-12-21T21:19:12+03:00",
+    "action": "ControllerStart",
+    "host": "localhost",
+    "details": "Controller started"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-21T21:20:19+03:00",
+    "action": "ControllerStop",
+    "host": "localhost",
+    "details": "Controller stopped"
+}
+{
+    "id": 1,
+    "timestamp": "2024-12-21T21:20:54+03:00",
+    "action": "ControllerStart",
+    "host": "localhost",
+    "details": "Controller started"
+}
+{
+    "id": 2,
+    "timestamp": "2024-12-21T21:28:57+03:00",
+    "action": "ControllerStop",
+    "host": "localhost",
+    "details": "Controller stopped"
+}
+{
+    "id": 1,
+    "timestamp": "2024-12-21T21:29:07+03:00",
+    "action": "ControllerStart",
+    "host": "localhost",
+    "details": "Controller started"
+}
