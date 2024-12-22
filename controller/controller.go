@@ -25,7 +25,6 @@ var services = struct {
 }{registry: make(map[string]*Service)}
 
 
-// Logs
 type LogEntry struct {
     ID        int    `json:"id"`
 	Timestamp string `json:"timestamp"`
@@ -214,19 +213,34 @@ func scaleService(w http.ResponseWriter, r *http.Request) {
 	defer services.mu.Unlock()
 
 	service, exists := services.registry[payload.Host]
-	if exists {
+	if !exists {
 		http.Error(w, "Host not found", http.StatusNotFound)
 		return
 	}
 
+	
+
+
 	service.Replicas = payload.Replicas
 	WriteLog("ScaleService", payload.Host, "Scaled to "+strconv.Itoa(payload.Replicas))
-	log.Printf("Scaled service for host %s to %d", payload.Host, payload.Replicas)
-	
+	// log.Printf("Scaled service for host %s to %d", payload.Host, payload.Replicas)
+	log.Printf("Scaling service for host %s to %d replicas", payload.Host, payload.Replicas)
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "success", "message": "Replicas scalled"})
 }
 
+func getStatus(w http.ResponseWriter, r *http.Request) {
+	agentHost := r.URL.Query().Get("host")
+
+	AgentStatus := AgentStatus{
+		Host:    agentHost,
+		Running: true,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(AgentStatus)
+}
 
 func main() {
     logStartupAndShutdown()
@@ -235,6 +249,7 @@ func main() {
 
 	http.HandleFunc("/register", registerHost)
 	http.HandleFunc("/scale", scaleService)
+	http.HandleFunc("/status", getStatus)
 
 	log.Println("Controller running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
