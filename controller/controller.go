@@ -9,7 +9,7 @@ import (
 	"sync"
     "strconv"
     "syscall"
-	"time"
+    	"time"
     "os/signal"
 )
 
@@ -87,9 +87,8 @@ func WriteLog(action, host, details string) {
 		return
 	}
 
-	// Записываем JSON с новой строкой
 	file.Write(prettyJSON)
-	file.WriteString("\n") // Добавляем перенос строки
+	file.WriteString("\n")
 }
 
 
@@ -123,11 +122,9 @@ func registerHost(w http.ResponseWriter, r *http.Request) {
 func logStartupAndShutdown() {
 	WriteLog("ControllerStart", "localhost", "Controller started")
 
-	// Создаём канал для перехвата сигналов завершения
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
 
-	// Блокируем выполнение до получения сигнала
 	go func() {
 		<-signalChan
 		WriteLog("ControllerStop", "localhost", "Controller stopped")
