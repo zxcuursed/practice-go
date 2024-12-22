@@ -13,7 +13,6 @@ import (
 	"strconv"
 )
 
-// const logFile = "agent_logs.json"
 
 // LogEntry represents a log structure
 type LogEntry struct {
@@ -88,7 +87,6 @@ func WriteLog(action, host, details string) {
 func logStartupAndShutdown() {
 	WriteLog("AgentStart", "localhost", "Agent started")
 
-	// Создаём канал для перехвата сигналов завершения
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
 
