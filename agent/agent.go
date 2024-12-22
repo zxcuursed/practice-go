@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"sort"
 	"os"
 	"os/signal"
 	"time"
@@ -143,6 +144,7 @@ func createReplicaHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+
 func getReplicaByIDHandler(w http.ResponseWriter, r *http.Request) {
 	// Извлекаем ID реплики из URL
 	replicaIDStr := r.URL.Path[len("/replica/"):]
@@ -164,16 +166,41 @@ func getReplicaByIDHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(replica)
 }
 
-func deleteReplicaHandler(w http.ResponseWriter, r *http.Request) {
-	WriteLog("DeleteReplicaRequest", "localhost", "Received delete replica request")
-	log.Println("Deleting replicas...")
+func getAllReplicasHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+
+	replicaList := []Replica{}
+	for _, replica := range replicas {
+		replicaList = append(replicaList, replica)
+	}
+
+	sort.Slice(replicaList, func(i, j int) bool {
+		return replicaList[i].ID < replicaList[j].ID
+	})
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(replicaList)
+}
+
+func deleteReplicaHandler(w http.ResponseWriter, r *http.Request) {
+	replicas = make(map[int]Replica)
+	WriteLog("DeleteAllReplicas", "localhost", "All replicas deleted")
+	log.Printf("All replicas have been deleted")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	response := map[string]string{
+		"status":  "success",
+		"message": "All replicas deleted successfully",
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
 func main() {
 	http.HandleFunc("/createReplica", createReplicaHandler)
 	http.HandleFunc("/deleteReplica", deleteReplicaHandler)
 	http.HandleFunc("/replica/", getReplicaByIDHandler)
+	http.HandleFunc("/replicas", getAllReplicasHandler)
 
 	log.Println("Agent running on port 8081")
 	log.Fatal(http.ListenAndServe(":8081", nil))

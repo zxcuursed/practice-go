@@ -1,7 +1,0 @@
-{
-    "id": 1,
-    "timestamp": "2024-12-21T18:38:57+03:00",
-    "action": "HandleLoad",
-    "host": "localhost",
-    "details": "Load processed"
-}
