@@ -1,13 +1,19 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"log"
-	"math/rand"
+	"net"
 	"net/http"
 	"os"
-	"time"
+	"os/signal"
+	"runtime"
 	"sync"
+	"syscall"
+	"time"
+
+	"github.com/shirou/gopsutil/v3/cpu"
 )
 
 // const logFile = "loader_logs.json"
@@ -22,9 +28,11 @@ type LogEntry struct {
 }
 
 var (
-	logFile      = "loader_logs.json"
+	logFile      = "loades_logs.json"
 	logCounter   = 0
 	logCounterMu sync.Mutex
+	server       *http.Server
+	startTime    time.Time
 )
 
 // incrementLogCounter safely increments and returns the log counter
@@ -37,6 +45,12 @@ func incrementLogCounter() int {
 
 // WriteLog writes an action to the log file with a unique ID
 func WriteLog(action, host, details string) {
+	if host == "::1" {
+		host = "localhost"
+	} else if host == "127.0.0.1" || host == "localhost" {
+		host = "localhost"
+	}
+
 	logID := incrementLogCounter()
 	logEntry := LogEntry{
 		ID:        logID,
@@ -62,11 +76,57 @@ func WriteLog(action, host, details string) {
 	file.WriteString("\n")
 }
 
+func handleStatus(w http.ResponseWriter, r *http.Request) {
+	WriteLog(r.URL.Path, "localhost", "Service status requested")
+	log.Println("Checking service status...")
+
+	response := map[string]interface{}{
+		"status": "running",
+		"uptime": time.Since(startTime).String(),
+		"message": "Service is running smothly",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
 
 func handleLoad(w http.ResponseWriter, r *http.Request) {
-	WriteLog("HandleLoad", "localhost", "Load processed")
+	WriteLog(r.URL.Path, "localhost", "Load processed")
 	log.Println("Processing load...")
+
+	var memStats runtime.MemStats
+	runtime.ReadMemStats(&memStats)
+
+	cpuPercents, _ := cpu.Percent(0, false)
+
+	response := map[string]interface{}{
+		"status": "success",
+		// "message": "Load processed successfully",
+		"cpu":map[string]interface{}{
+			"load_percent": cpuPercents[0],
+		},
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func handleStop(w http.ResponseWriter, r *http.Request) {
+	WriteLog(r.URL.Path, "localhost", "Service stop requested")
+	log.Println("Stopping the service...")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"status"}: "stopping", "message": "Service is shutting down"}`))
+
+	go func ()  {
+		if err := server.Close(); err != nil {
+			log.Fatalf("Error shutting down server: %v", err)
+		}
+		os.Exit(0)
+	}()
 }
 
 
@@ -78,9 +138,37 @@ func handleLoad(w http.ResponseWriter, r *http.Request) {
 // }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-	http.HandleFunc("/load", handleLoad)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/load", handleLoad)
+	mux.HandleFunc("/status", handleStatus)
+	mux.HandleFunc("/stop", handleStop)
 
-	log.Println("Loader running on port 8082")
-	log.Fatal(http.ListenAndServe(":8082", nil))
+	startTime = time.Now()
+
+	server = &http.Server{
+		Addr:   ":8082",
+		Handler: mux,
+		BaseContext: func(_ net.Listener) context.Context {
+			return context.Background()
+		},
+	}
+
+	stopChan := make(chan os.Signal, 1)
+	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		log.Println("Loades running on port 8082")
+		if err := server.ListenAndServe(); err != http.ErrServerClosed {
+			log.Fatalf("Server error: %v", err)
+		}
+	}()
+
+	<-stopChan
+	log.Println("Shutting down server gracefully...")
+
+	// rand.Seed(time.Now().UnixNano())
+	// http.HandleFunc("/load", handleLoad)
+
+	// log.Println("Loader running on port 8082")
+	// log.Fatal(http.ListenAndServe(":8082", nil))
 }
